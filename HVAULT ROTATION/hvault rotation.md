@@ -280,7 +280,7 @@ vault read database/creds/spring-database-role
 ```
 vault kv put secret/crm-service-backend user.username=mokai user.password=12345
 ```
-
+![img_2.png](img_2.png)
 
 
 
