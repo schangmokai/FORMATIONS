@@ -177,6 +177,8 @@ vault write database/roles/spring-database-role \
     max_ttl="10m"
 ```
 
+![img_1.png](img_1.png)
+
 ## Explications
 
 ### Commande 1
