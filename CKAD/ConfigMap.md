@@ -1,37 +1,171 @@
 
 ## ConfigMap dans kubernetes
-Dans kubernetes, on distingue plusieurs types de service
+Dans kubernetes, Les configmaps sont utilisées pour garder les données de configuration des applications
 
-- Service de type ClusterIP
+
+### Impératif
+
+- ConfigMap à partir d'un Literal (Impérative)
+
+```
+  kubectl create configmap maconfig --from-literal=USERNAME=mokai --from-literal=PASSWORD=mokai
+```
+- ConfigMap à partir d'un Fichier de config (Impérative)
+```
+  kubectl create configmap maconfig --from-file=application.properties
+```
+
+### Déclarative
+- ConfigMap à partir d'un Fichier de yaml(Déclarative)
+```
+config-map.yaml
+```
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: maconfig2
+data:
+  USERNAME: mokai
+  PASSWORD: mokai
+```
+
+```
+kubectl apply -f config-map.yaml
+```
+### visualisation de la liste des configMap
+
+```
+kubectl get configMap
+kubectl get cm
+```
+
+### Afficher la description d'un configMap
+
+```
+kubectl describe configMap maconfig
+```
+
+### Utilisation dans des pods
+- Injection d'un configMap dans un pod
+
+
+### Pod simple
+
+```
+monpod.yaml
+```
 
 ```
 apiVersion: v1
-kind: Service
+kind: Pod
 metadata:
-  name: monservice
+  name: monpod
   labels:
-    name: demoservice
-    app: front-end
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: 80
-  selector:
     name: demopod
     app: front-end
-
+spec:
+   containers:
+   - name: demopod
+     image: nginx
+     ports:
+       - containerPort: 80
 ```
 
-- Service de type NodePort
-- Service de type LoadBalancer
-
-
-
-### pour accéder à un service de type cluster IP dans un pod
+### Pod avec injection de configMap (envFrom)
 
 ```
-curl http://monservice.default.svc.cluster.local:80
-ou 
-curl monservice:80
+monpod_config_map.yaml
+```
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: monpod
+  labels:
+    name: demopod
+    app: front-end
+spec:
+   containers:
+   - name: demopod
+     image: nginx
+     ports:
+       - containerPort: 80
+     envFrom:
+       - configMapRef:
+           name: maconfig2
+```
+
+```
+kubectl apply -f monpod_config_map.yaml
+```
+
+### Pod avec injection de configMap (env)
+
+```
+monpod_config_map.yaml
+```
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: monpod
+  labels:
+    name: demopod
+    app: front-end
+spec:
+   containers:
+   - name: demopod
+     image: nginx
+     ports:
+       - containerPort: 80
+     env:
+       - name: USERNAME
+         valueFrom:
+           configMapKeyRef:
+             name: maconfig2
+             key: USERNAME
+```
+
+```
+kubectl apply -f monpod_config_map.yaml
+```
+
+### Pod avec injection de configMap (volume)
+
+```
+kubectl create configmap configdemo --from-file=application.properties --from-file=index.html
+```
+```
+monpod_config_map.yaml
+```
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: monpod
+  labels:
+    name: demopod
+    app: front-end
+spec:
+   containers:
+   - name: demopod
+     image: nginx
+     ports:
+       - containerPort: 80
+     volumeMounts:
+       - name: config-volume
+         mountPath: /usr/share/nginx/html
+   volumes:
+   - name: config-volume
+     configMap:
+       name: configdemo
+```
+
+### Pour lister les variable d'environnement dans le pod
+```
+kubectl exec -ti monpod -- env
 ```
