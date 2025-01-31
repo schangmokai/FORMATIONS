@@ -26,7 +26,7 @@ spec:
    - name: demopod
      image: nginx
      ports:
-     - containerPort: 80
+       - containerPort: 80
 ```
 
 ##  Définition d'un pod avec variable d'environnement
@@ -44,12 +44,12 @@ spec:
    - name: demopod
      image: nginx
      ports:
-     - containerPort: 80
+       - containerPort: 80
      env:
-     - name: USERNAME
-       value: mokai
-     - name: PASSWORD
-       value: mokai
+       - name: USERNAME
+         value: mokai
+       - name: PASSWORD
+         value: mokai
 ```
 
 
