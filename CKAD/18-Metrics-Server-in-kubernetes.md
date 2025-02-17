@@ -1,53 +1,11 @@
-## Logs
-
-Les logs son utiliser pour visualiser le comportement de notre application.
-
-1. Si mon pod à un seul container
+## Apply Metric-Server to the cluster
 
 ```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: monpod
-  labels:
-    name: demopod
-    app: front-end
-spec:
-   containers:
-   - name: demopod
-     image: nginx
-     ports:
-       - containerPort: 8080
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
-Pour visualiser les logs
+Pour valide que les metric du cluster peuvent être récupérées
 
 ```
-kubectl logs monpod --follow
-```
-
-2. Si mon pod à plusieurs containers il faut spécifier le nom du container par exemple democontainer1
-
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: monpod
-  labels:
-    name: demopod
-    app: front-end
-spec:
-   containers:
-   - name: democontainer1
-     image: nginx
-     ports:
-       - containerPort: 8080
-   - name: democontainer2
-     image: nginx
-     ports:
-       - containerPort: 80
-```
-
-```
-kubectl logs monpod democontainer1 --follow
+kubectl top node
 ```

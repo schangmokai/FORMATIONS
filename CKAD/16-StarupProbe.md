@@ -1,6 +1,6 @@
-## LivenessProbe
+## startupProbe
 
-C'est une sonde dans kubernetes qui entre en jeux une fois que l'application est ready et vérifie l'état de l'application a des intervals régulier.
+C'est une sonde dans kubernetes qui attend que l'application soit complètement UP avant de donner la main au readiness et au liveness
 
 ```
 apiVersion: v1
@@ -23,7 +23,7 @@ Pour vérifier que l'application est up le développeur sait quelle commande ou 
 1. HTTP TEST (application web api, ...)
 
 ```
-livenessProbe:
+startupProbe:
   httpGet:
     path: /healthz
     port: 8080
@@ -49,7 +49,7 @@ spec:
      image: mon-app
      ports:
        - containerPort: 8080
-     livenessProbe:
+     startupProbe:
        httpGet:
          path: /api/ready
          port: 8080
@@ -65,7 +65,7 @@ Donc Dès le pod va démarré et sera ready, kubernetes vas envoyer une requête
 2. TCP TEST (base de données)
 
 ```
-livenessProbe:
+startupProbe:
   tcpSocket:
     port: 3306
  ```
@@ -86,7 +86,7 @@ spec:
      image: mysql
      ports:
        - containerPort: 3306
-     livenessProbe:
+     startupProbe:
        tcpSocket:
          port: 3306
 ```
@@ -94,7 +94,7 @@ spec:
 3. EXEC COMMAND (pour exécuter une commande
 
 ```
-livenessProbe:
+startupProbe:
   exec:
     command:
       - cat
@@ -117,14 +117,14 @@ spec:
      image: nginx
      ports:
        - containerPort: 80
-     livenessProbe:
+     startupProbe:
        exec:
          command:
            - cat
            - /app/is_ready
 ```
 
-Si tu sais que initialement ton application peut mettre 10 Seconde pour démarré, alors dans ton livenessProbe, le initialDelaySeconds doit être supérieur au initialDelaySeconds du readynessProbe
+Si tu sais que initialement ton application peut mettre 10 Seconde pour démarré, alors dans ton startupProbe, le initialDelaySeconds doit être supérieur au initialDelaySeconds du readynessProbe
 
 ```
 initialDelaySeconds: 10

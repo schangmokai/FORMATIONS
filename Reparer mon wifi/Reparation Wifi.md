@@ -8,7 +8,7 @@ sudo apt update
 sudo apt install curl
 ```
 ### 1- verifier l'existance du repertoire '/run/systemd/resolve/stub-resolv.conf'
-Si le fichier n'existe pas, bien vouloir  le créer
+Si le fichier n'existe pas, bien vouloir le créer
 
 ```
  cd /run/systemd/
@@ -20,11 +20,11 @@ Si le fichier n'existe pas, bien vouloir  le créer
  cd resolve/
 ```
 ```
- nano nano stub-resolv.conf
+ sudo nano stub-resolv.conf
 ```
 
 
-### 2- A l'intérieur du fichier ajouter les deux ligne suivanates:
+### 2- A l'intérieur du fichier ajouter les deux lignes suivantes:
 
 ```
  nameserver 8.8.8.8

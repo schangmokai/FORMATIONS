@@ -1,6 +1,6 @@
-## ReadinessProbe
+## LivenessProbe
 
-C'est une sonde dans kubernetes qui vérifie que l'application (container dans le pod) est up et prêt à recevoir le trafic avant de mettre le pod running.
+C'est une sonde dans kubernetes qui entre en jeux une fois que l'application est ready et vérifie l'état de l'application a des intervals régulier.
 
 ```
 apiVersion: v1
@@ -18,12 +18,12 @@ spec:
        - containerPort: 8080
 ```
 
-Pour vérifier que l'application est up le développeur sais quelle commande ou alors quelle requête envoyer à l'application.
+Pour vérifier que l'application est up le développeur sait quelle commande ou alors quelle requête envoyer à l'application.
 
 1. HTTP TEST (application web api, ...)
 
 ```
-readinessProbe:
+livenessProbe:
   httpGet:
     path: /healthz
     port: 8080
@@ -49,7 +49,7 @@ spec:
      image: mon-app
      ports:
        - containerPort: 8080
-     readinessProbe:
+     livenessProbe:
        httpGet:
          path: /api/ready
          port: 8080
@@ -60,12 +60,12 @@ spec:
        periodSeconds: 3
 ```
 
-Donc Dès le pod va démarré, kubernetes vas envoyer une requête http sur le port 8080 à l'url /api/ready s'il a un retour 200 alors il met le status du pod à ready.
+Donc Dès le pod va démarré et sera ready, kubernetes vas envoyer une requête http sur le port 8080 à l'url /api/ready et par defaut vas redemarrer le container à l'intérieur du pod si celui-ci echoue.
 
 2. TCP TEST (base de données)
 
 ```
-readinessProbe:
+livenessProbe:
   tcpSocket:
     port: 3306
  ```
@@ -86,7 +86,7 @@ spec:
      image: mysql
      ports:
        - containerPort: 3306
-     readinessProbe:
+     livenessProbe:
        tcpSocket:
          port: 3306
 ```
@@ -94,7 +94,7 @@ spec:
 3. EXEC COMMAND (pour exécuter une commande
 
 ```
-readinessProbe:
+livenessProbe:
   exec:
     command:
       - cat
@@ -117,14 +117,14 @@ spec:
      image: nginx
      ports:
        - containerPort: 80
-     readinessProbe:
+     livenessProbe:
        exec:
          command:
            - cat
            - /app/is_ready
 ```
 
-Si tu sais que initialement ton application peut mettre 10 Seconde pour démarré, alors dans la readiness ou le liveness tu as des options possibles:
+Si tu sais que initialement ton application peut mettre 10 Seconde pour démarré, alors dans ton livenessProbe, le initialDelaySeconds doit être supérieur au initialDelaySeconds du readynessProbe
 
 ```
 initialDelaySeconds: 10

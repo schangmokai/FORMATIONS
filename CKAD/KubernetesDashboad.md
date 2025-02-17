@@ -1,63 +1,109 @@
 
-## Dans ce chapitre, nous entrons dans la sécurité sur kubernetes
-On distingue les UserAccount et les ServiceAccount
+## Installation du Kubernetes Dashboard (UI d'administration)
 
-## UserAccount
+Le Kubernetes Dashboard est une interface web qui permet de gérer les ressources de ton cluster. Voici les étapes pour l'installer et y accéder
 
-Les userAccount sont utilisé par l'administrateur du cluster kubernetes ou alors par les développeurs pour faire des deployment dans le cluster kubernetes.
 
-## ServiceAccount
-
-Son utilisé par des applications pour interagir avec le cluster Kubernetes (Jenkins, Prometheus, ...)
-
-### Comment créer un serviceAccount
+### 1. Installer le Kubernetes Dashboard
 
 ```
-kubectl create serviceaccount dashboard-sa
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 ```
-Pour lister les serviceaccount disponnibles
+### 2. Vérifie que les pods du Dashboard tournent correctement :
 
 ```
-kubectl get serviceaccount
-```
-Une fois le service account crée, il crée automatiquement le service account token qui sera utilisé par l'application pour s'authentifier auprès du cluster kubernetes.
-
-```
-kubectl describe serviceaccount dashboard-sa
+kubectl get pods -n kubernetes-dashboard
 ```
 
-Pour visualiser le token
+### 3. Créer un compte admin pour accéder au Dashboard
 
-```
-kubectl describe secret dashboard-sa-token-bbaa
-```
-
-Le service Account peut être ajouté à la définition d'un Pod come suit:
+file role-admin-user.yaml
 
 ```
 apiVersion: v1
-kind: Pod
+kind: ServiceAccount
 metadata:
-  name: monpod
-  labels:
-    name: demopod
-    app: front-end
-spec:
-   containers:
-   - name: demopod
-     image: nginx
-     ports:
-       - containerPort: 80
-   serviceAccountName: dashboard-sa
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
 ```
 
-- NB: pour ajouter un serviceAccount a un pod existant, il faut le detruire et le recréer c'est pas forcement le cas pour les déployment.
-
-Par defaut, chaque pod crée dans kubernetes utilise le service account token par defaut de kubernetes
+### 4. Vérifie que l'utilisateur a bien été créé :
 
 ```
-kubectl run monpod --image=nginx
-kubectl describe pod monpod
+kubectl get serviceaccount -n kubernetes-dashboard
 ```
 
-![img_2.png](img_2.png)
+### 5. Récupérer le Token d'accès
+
+```
+kubectl -n kubernetes-dashboard create token admin-user
+```
+Copier le token dans un fichier il sera demandé pour ouvrir le dashboad
+
+### 6. Démarrer un proxy pour accéder au Dashboard
+
+```
+kubectl proxy
+```
+### 7. Dans le navigateur, tapper le lien ci-dessous
+
+```
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+```
+
+Copie coller le token de l'étape précédente
+
+
+### 8. Exposer le Dashboard via un NodePort (si besoin d'accès externe)
+
+Si tu veux accéder au Dashboard sans passer par kubectl proxy, tu peux modifier le service pour l'exposer en NodePort :
+
+```
+kubectl edit svc kubernetes-dashboard -n kubernetes-dashboard
+```
+
+```
+kubectl get svc -n kubernetes-dashboard
+```
+
+```
+https://<node-ip>:<nodeport>
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
