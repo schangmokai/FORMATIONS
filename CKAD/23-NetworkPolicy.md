@@ -20,7 +20,7 @@ Par defaut kubernetes ouvre le trafic pour tous les pods et pour toutes les dest
 
 Lorsqu'on définit un NetworkPolicy, la première des choses à faire c'est :
 
-1. de spécifier le pod ou l'enssemple des pos auxquelle notre NetworkPolicy s'applique.
+1. de spécifier le pod ou l'enssemple des pods auxquelle notre NetworkPolicy s'applique.
 
 ```
 apiVersion: networking.k8s.io/v1
@@ -211,3 +211,27 @@ spec:
 
 notre serveur de backup est a l'adersse 192.168.0.11/24  et nous avons un agent dans le pod qui pousse les données sur le serveur de backup au port 80.
 
+## CBS Policy
+
+```
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cbs-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      type: backend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: crm-front-end
+          type: frontend
+    - namespaceSelector:
+        matchLabels:
+          name: default   
+```

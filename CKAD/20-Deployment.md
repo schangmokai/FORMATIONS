@@ -223,7 +223,7 @@ spec:
          - containerPort: 8080
 ```
 
-changons notre service pour quil pointe sur v2
+Changeons notre service pour quil pointe sur v2
 
 ```
 apiVersion: v1
@@ -276,7 +276,7 @@ spec:
          - containerPort: 8080
 ```
 
-Creont maintenant le deploiement v2
+Creont maintenant le déploiement v2
 
 ```
 apiVersion: apps/v1
@@ -306,7 +306,7 @@ spec:
          - containerPort: 8080
 ```
 
-changeons notre service pour quil pointe sur les deux deploiement
+Changeons notre service pour quil pointe sur les deux déploiements
 
 ```
 apiVersion: v1

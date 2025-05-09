@@ -1,3 +1,4 @@
+## DEBUT DU DOCUMENT
 
 ### Mettre à jour les paquets
 ```
@@ -39,6 +40,8 @@ sudo nano /etc/resolv.conf
 nameserver 127.0.0.1
 sudo systemctl restart systemd-resolved
 ```
+
+## FIN DU DOCUMENT
 
 
 
