@@ -49,8 +49,8 @@ http://92.242.187.138:8081/
 
 ## change password
 ```
-username: admin
-password: mokai
+username: 
+password: 
 ```
 
 # NEXUS UP AND TABLE

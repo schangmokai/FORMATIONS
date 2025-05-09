@@ -33,7 +33,7 @@ sudo systemctl restart vault
 ```
 ### configuration de hvault pour la desactivation du ssl
 
-Dans le fichier /etc/vault.d/vault.hcl nous allons modifier en commentant le bloc HTTPS Listener
+Dans le fichier  nous allons modifier en commentant le bloc HTTPS Listener
 
 ```
 # HTTPS listener

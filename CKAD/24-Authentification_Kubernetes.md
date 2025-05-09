@@ -1,5 +1,7 @@
 ## Authentification dans kubernetes
 
+#  deprecated METHODS since 1.19
+
 Il s'agit des mécanismes qui permettent de s'authentifier auprès de l'api-serveur avant d'envoyer la requête à Kubernetes.
 
 ### On distinque 4 type d'authentifications:
@@ -217,6 +219,11 @@ preferences: {}
 
 
 
+
+#  New METHODS
+
+###################################################################################################
+
 ## New methode to create an user in kubernetes
 
 1. L'utilisateur qui vient d'intégrer l'entreprise doit générer un paire de clé sur sa machine.
@@ -258,7 +265,7 @@ kind: CertificateSigningRequest
 metadata:
   name: mokai
 spec:
-  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZUQ0NBVDBDQVFBd0VERU9NQXdHQTFVRUF3d0ZiVzlyWVdrd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQQpBNElCRHdBd2dnRUtBb0lCQVFDU0xWK1BoQ09KYy9pWTJMbkhvWm5RaTFIM2pZR0lNa3FBK1J5RE1jR0ZhcnYzCnRwVXFtd3JHa0dTZ0dMYnVjUTE2ZVl4MGd5MkNVb0lPb0JFcVN4VGgyYTlFcEczRmRZUzU0N2dyZ01HM1JVaXMKSXdJUDh4L3JtVTFveHcrRFpMZ1hjcVdmd1luVjRJcGdvM3Z0cnp5bjZ1T2xaQVJ0YVBEZzZjaWJBMk9NYWF6ZQpwUjRPM3pPbkNJZk5JZmFqNlk2MjEzYVg2SnVyUXlPZCtsSE9NdCs0OC9vYWFkRmRCR2c0STFLeXFhZmpjVHVRClN2VjVBNXhKeC9VSUt2OG1DdTNyYTZnMGh6THZFY254M211K0FuTHhMTTgwc1VYampkb1IyNU5LU3lkZnVzRm0KTEtEbHBsMHN2bU5yMTF0SmVLaFRhTjk5b0VEQUFwdDBIMWMwZkp0bEFnTUJBQUdnQURBTkJna3Foa2lHOXcwQgpBUXNGQUFPQ0FRRUFLZGJRRlVncTZYNEZRRSs2RWJxZ3Y2L2xVSHRTZEN5VnJEYjQvbkFzYjFCakw3RHlDZThOCmpnNCsxSlFERStRZlJPaTBGNkU4NTcyT0syVjJidVcvMG5VRFFUMmVjUzlQR1NjQ2RsTjBxeHcxamNlWmxXNnAKalV5N0RtTWdRRmY0OUVhSTlJbWhDZGhOMGJJTThEZFh2aHNWRWJ5L3dUZU5iWGxncy9XT1NQZ0VBU1lFYTJzTwp5Zjc3MXZUZ0lXTUg1ODZWQ1o5di9oQkhVNkx2YWxDb253ZnhyN05YWklEUXkwRFpHSE5MS2pwMmxyd1RrM0xnCndudllNb3oyTWZiSTBJMjIxdXo2bnR0Q29zaHBsSDR5WTNWTmF6RXhPeU9IUmQ2YWZoMFpEZWJiUURhem04REMKMTArVzhEQTNZMmYwanFLR1JGeGQvU2xFc0xOZVpZUnYrQT09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1ZUQ0NBVDBDQVFBd0VERU9NQXdHQTFVRUF3d0ZiVzlyWVdrd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQQpBNElCRHdBd2dnRUtBb0lCQVFEVDgxRjZrVVR3NzVOYXJJRjNKUDU4eDM3L3R6Wkp5NExuYU54Y0xDRi9BYm5aCkJQSFBFZkYxZkhGSUJaN2k0ZG5JWmhldmMrTGxIZ0ZJUE14d1NrclJWTWVnUUFnUmhtRFV5YUtBb0NKaldpQWcKVE9veFFpQk1mZHNNVzhIN2F6YW92QjBITm9ocnFIVVBTeGRXWFJqT0F0bHgrWDdic1hINmJLc3lrb1ZGbXR1awpJOXVmSy96a0M0cnpLeTQxays2eTlJMlh2cW1nRVo0VTRzS1Z5bjNXOTFuSjBTcFpTT2FkOG96aTUyQ2x6c0w4CmozTklndnM3dnpWYVhhZnB3SzdNczFpUzVhMEROMnAzMHlJTmVaNkRaNkg5SGY2SHFseEQ2VUhnamVhcWhHSWIKVVRtQ0JwZk1qaWJLVEZKNTZ6cE5POHZMT01ubURUYk5UYzlTTXBkVkFnTUJBQUdnQURBTkJna3Foa2lHOXcwQgpBUXNGQUFPQ0FRRUFvSmlLcWt3VVdocG1ZTHQyNkNrU3psbWJvQlZldzhuRVVLcGg0RzNiRmt0cTA2NFhqWSsrClJEcnkzWHFNMGlZSWw1em4zTUo2RU9qWnNHYnhGd216QjUwYzIxMWpScHIwVEE4aGFQSFU2RldXS0lDZGtycWgKMGZCQW53OXBhVFpCT2tYRVpsL0xBR3REbE1YNnZkWW1aV0hBNTM4Sk1ZaVV2VVBYM01qb21NVDZaVW8xWGs5bgpxd3NxbWNzVkdLeUFJMGNQR0VERUlvMXZDaE1rMUtaWWJEcU5aNWpVY2REbEtSY0QvUS9aZGNUTlNPV2lxWHVqCnFrNElDcFJ1MFZkb0M2TlFXbk9NT1VCWEhtdG1VSmFoNXY2aGRwcU9XVjZqYzFUbTdKNkY3Ujd6K3Fneno2QisKc0taMFBpS3BWdXJuS2xrOGZ2dm5meHpHOTF1Y2FGOGZpQT09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
   signerName: kubernetes.io/kube-apiserver-client
   expirationSeconds: 86400  # one day
   usages:
@@ -333,4 +340,20 @@ kubectl config set-context mokai --cluster=kubernetes --user=mokai
 
 ```
 kubectl config use-context mokai
+```
+
+```
+kubectl get pod
+```
+
+## creation de l'utilisateur mokai
+
+```
+sudo useradd mokai -m
+sudo passwd mokai
+sudo mkdir /home/mokai/.kube
+sudo cp .kube/config /home/mokai/.kube/config
+sudo nano /home/mokai/.kube/config   // retirer la config admin du fichier
+sudo chown -R mokai:mokai /home/mokai/.kube/
+sudo su - mokai
 ```

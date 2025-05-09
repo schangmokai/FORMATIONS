@@ -49,8 +49,8 @@ sudo ./install.sh
 ## change password
 ```
 http:92.242.187.138:8083
-username: admin
-password: Harbor12345
+username: 
+password: 
 ```
 
 

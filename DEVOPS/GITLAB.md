@@ -52,15 +52,15 @@ gitlab-rails console -e production
 ```
 ```
 user = User.where(id: 1).first
-user.password = 'Mokai@10.'
-user.password_confirmation = 'Mokai@10.'
+user.password = ''
+user.password_confirmation = ''
 user.save!
 ```
 
 ## new password
 ```
-username: root
-password: Mokai@10.
+username: 
+password: 
 ```
 
 # GITLAB UP AND TABLE

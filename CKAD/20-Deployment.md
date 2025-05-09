@@ -223,7 +223,7 @@ spec:
          - containerPort: 8080
 ```
 
-changons notre service pour quil pointe sur v2
+Changeons notre service pour quil pointe sur v2
 
 ```
 apiVersion: v1

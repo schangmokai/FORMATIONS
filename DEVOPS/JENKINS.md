@@ -86,12 +86,18 @@ a8ab95b2b65a425690a91e3d0fd58c8e
 
 ### access url 
 
-http://92.242.187.138:8082/
+http://92.242.187.138:8092/
 
 ## change password
 ```
-username: admin
-password: Mokai@10.
+username: 
+password: 
+```
+
+## installation des plugins
+
+```
+Pipeline Stage View Plugin
 ```
 
 # JENKINS UP AND TABLE
