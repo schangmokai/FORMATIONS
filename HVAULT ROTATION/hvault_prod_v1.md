@@ -57,7 +57,7 @@ première des choses c'est de modifier le fichier de configuration /etc/vault.d/
 cat /etc/vault.d/vault.hcl
 ```
 
-On active l'UI 
+On active l'UI
 
 ```
 ui = true
@@ -383,7 +383,7 @@ spring.cloud.vault.enabled=true
 
 ```
 
- AU lieu de ceci
+AU lieu de ceci
 
 ```
 spring.cloud.vault.host=127.0.0.1
