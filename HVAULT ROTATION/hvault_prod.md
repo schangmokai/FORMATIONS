@@ -389,7 +389,6 @@ spring.cloud.vault.enabled=true
 spring.cloud.vault.host=127.0.0.1
 spring.cloud.vault.port=8200
 spring.cloud.vault.uri=http://127.0.0.1:8200
-spring.cloud.vault.token=
 spring.cloud.vault.scheme=http
 spring.cloud.vault.database.role=spring-database-role
 ```
