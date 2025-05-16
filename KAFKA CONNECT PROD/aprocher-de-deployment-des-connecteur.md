@@ -45,7 +45,6 @@ echo "🔍 Traitement du connecteur: $connector_name"
   done
   
   echo "✅ Tous les connecteurs ont été traités."
-
 ```
 
  ## 🐳 Dockerfile
@@ -142,5 +141,4 @@ spec:
             - name: KAFKA_CONNECT_URL
               value: "{{ .Values.kafkaConnectUrl }}"
       restartPolicy: Never
-
 ```
