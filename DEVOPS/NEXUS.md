@@ -29,7 +29,7 @@ volumes:
 ```
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 ### pour avoir le password admin

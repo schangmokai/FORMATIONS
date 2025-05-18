@@ -39,7 +39,7 @@ volumes:
 ### commande de lancement
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 
