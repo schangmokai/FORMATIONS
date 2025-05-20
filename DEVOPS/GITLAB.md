@@ -1,6 +1,12 @@
 ## Installation Gitlab
 
 
+```
+###############################################################################
+#########################  GITLAB DEV      ####################################
+###############################################################################
+```
+
 docker-compose.yml
 
 ```
@@ -28,12 +34,22 @@ networks:
     driver: bridge
 ```
 
+
+
+```
+###############################################################################
+#########################  GITLAB PROD      ###################################
+###############################################################################
+```
+
 ## installation pour un environnement de prod
+
+
 
 1- créer un certificat autosigné
 
 ```
-openssl req -x509 -newkey rsa:4096 -keyout gitlab-selfsigned.key -out gitlab-selfsigned.crt -days 365 -nodes
+openssl req -x509 -newkey rsa:4096 -keyout gitlab-selfsigned.key -out gitlab-selfsigned.crt -days 89365 -nodes
 ```
 
 2- vérifier la validité du certificat
@@ -41,7 +57,7 @@ openssl req -x509 -newkey rsa:4096 -keyout gitlab-selfsigned.key -out gitlab-sel
 ```
 openssl x509 -in gitlab-selfsigned.crt -noout -enddate
 ou
-openssl s_client -connect 212.227.49.79:443 -showcerts </dev/null 2>/dev/null | openssl x509 -noout -dates -subject
+openssl s_client -connect 10.145.40.242:443 -showcerts </dev/null 2>/dev/null | openssl x509 -noout -dates -subject
 ```
 
 3- deplacer les certificat vers un repertoire à monter sur git
@@ -50,6 +66,12 @@ openssl s_client -connect 212.227.49.79:443 -showcerts </dev/null 2>/dev/null | 
 mkdir -p /srv/gitlab/certs
 mv gitlab-selfsigned.crt /srv/gitlab/certs/
 mv gitlab-selfsigned.key /srv/gitlab/certs/
+
+mv gitlab-selfsigned.crt 10.145.40.242.crt
+mv gitlab-selfsigned.key 10.145.40.242.key
+
+mv 10.145.40.242.crt /srv/gitlab/certs/10.145.40.242.crt
+mv 10.145.40.242.key /srv/gitlab/certs/10.145.40.242.key
 ```
 
 4- Docker compose pour l'installation de gitLab
@@ -66,12 +88,13 @@ services:
       - '/srv/gitlab/data:/var/opt/gitlab'
       - '/srv/gitlab/logs:/var/log/gitlab'
       - '/srv/gitlab/config:/etc/gitlab'
-      - '/srv/gitlab/certs/gitlab-selfsigned.crt:/etc/gitlab/ssl/gitlab.crt:ro'
-      - '/srv/gitlab/certs/gitlab-selfsigned.key:/etc/gitlab/ssl/gitlab.key:ro'
+      - '/srv/gitlab/certs/10.145.40.242.crt:/etc/gitlab/ssl/10.145.40.242.crt:ro'
+      - '/srv/gitlab/certs/10.145.40.242.key:/etc/gitlab/ssl/10.145.40.242.key:ro'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'https://212.227.49.79'
+        external_url 'https://10.145.40.242'
         nginx['redirect_http_to_https'] = true
+        letsencrypt['enable'] = false
     networks:
       - devops_network_app
       - devops_network_lab
@@ -92,7 +115,7 @@ docker compose up -d
 
 ## change password
 ```
-sudo docker exec -it gitlab /bin/bash
+sudo docker exec -it gitlabhttps /bin/bash
 ```
 ```
 gitlab-rails console -e production
@@ -108,6 +131,11 @@ user.save!
 ```
 username: 
 password: 
+```
+
+```
+curl -k https://10.145.40.242
+https://10.145.40.242
 ```
 
 # GITLAB UP AND TABLE
