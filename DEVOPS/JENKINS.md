@@ -252,12 +252,34 @@ a8ab95b2b65a425690a91e3d0fd58c8e
 
 ### access url
 
-https://92.242.187.138:6443/
+https://10.145.40.242:6443/
 
 ## change password
 ```
 username: 
 password: 
+```
+
+## Installation des plugins
+
+```
+blue ocean, 
+maven, 
+java jdk, 
+git, 
+pipeline, 
+rbac stratégies, 
+metrics, 
+cloudbees, 
+CloudBees Disk Usage Simple,
+CloudBees Credentials,
+ssh,
+docker pipeline, 
+jacoco,
+coverage,
+Pipeline Maven Integration,
+Maven integration, 
+Pipeline Utility Steps
 ```
 
 # JENKINS UP AND TABLE
