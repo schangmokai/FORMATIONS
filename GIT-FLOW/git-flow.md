@@ -72,8 +72,8 @@ Ensuite, la branche `release` est supprimée.
 
 ```bash
   git push --tags
-git push origin master
-git push origin develop
+  git push origin master
+  git push origin develop
 ```
 
 ### 9) Création d’un hotfix à l’aide de Git Flow
