@@ -8,6 +8,9 @@
 
 Ce qui précède est une mise en pratique de Git Flow mais de façon manuelle.
 
+
+![img.png](img.png)
+
 ## Installation de Git Flow
 
 ```bash

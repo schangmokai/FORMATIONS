@@ -63,6 +63,9 @@ services:
       apt-get install -y maven docker.io openjdk-17-jdk wget yq &&
       wget https://github.com/aquasecurity/trivy/releases/download/v0.44.0/trivy_0.44.0_Linux-64bit.deb &&
       dpkg -i trivy_0.44.0_Linux-64bit.deb &&
+      curl -L -o cosign https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64 &&
+      mv cosign /usr/local/bin/cosign &&
+      chmod +x /usr/local/bin/cosign &&
       exec /usr/local/bin/jenkins.sh"
 networks:
   devops_network_app:
@@ -81,6 +84,22 @@ volumes:
 ```
 docker compose up -d
 ```
+
+### confirmon l'installation de cosign
+
+```
+docker exec -it jenkins cosign version
+```
+
+### placer le fichier cosign.key dans le volume jenkins_jenkins_home
+
+```
+ls /var/lib/docker/volumes/jenkins_jenkins_home/_data
+cd /var/lib/docker/volumes/jenkins_jenkins_home/_data
+mkdir cosign
+nano cosign.key
+```
+Copier le contenu du fichier
 
 ### pour avoir le password admin
 
@@ -198,6 +217,9 @@ services:
       apt-get install -y maven docker.io openjdk-17-jdk wget yq &&
       wget https://github.com/aquasecurity/trivy/releases/download/v0.44.0/trivy_0.44.0_Linux-64bit.deb &&
       dpkg -i trivy_0.44.0_Linux-64bit.deb &&
+      curl -L -o cosign https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64 &&
+      mv cosign /usr/local/bin/cosign &&
+      chmod +x /usr/local/bin/cosign &&
       exec /usr/local/bin/jenkins.sh"
 
   nginx:
@@ -280,6 +302,8 @@ coverage,
 Pipeline Maven Integration,
 Maven integration, 
 Pipeline Utility Steps
+SonarQube Scanner
+SonarQube Quality Gates Plugin
 ```
 
 # JENKINS UP AND TABLE

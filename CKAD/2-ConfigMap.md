@@ -142,7 +142,7 @@ kubectl create configmap configdemo --from-file=application.properties --from-fi
 monpod_config_map.yaml
 ```
 
-```
+``` bash
 apiVersion: v1
 kind: Pod
 metadata:
