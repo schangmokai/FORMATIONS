@@ -139,9 +139,19 @@ Pipeline Stage View Plugin
 
 ### 📁 Arborescence
 
+Commande pour la récupération des certificats sur cahque serveur
+
+```
+echo -n | openssl s_client -connect 10.145.40.242:8443 -servername 10.145.40.242 | \
+sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > nexus.crt
+```
+
 ```
 jenkins-reverse-proxy/
 ├── docker-compose.yml
+|--- certs/
+|   |___ sonarqube.crt
+|   |___ nexus.crt
 ├── nginx/
 │   ├── nginx.conf
 │   ├── ssl/
@@ -202,6 +212,8 @@ services:
       - jenkins_home:/var/jenkins_home
       - maven_repo:/var/jenkins_home/.m2
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./certs/sonarqube.crt:/usr/local/share/ca-certificates/sonarqube.crt:ro
+      - ./certs/nexus.crt:/usr/local/share/ca-certificates/nexus.crt:ro
     networks:
       - devops_network_lab
       - devops_network_app
@@ -210,16 +222,29 @@ services:
     environment:
       MAVEN_HOME: /usr/share/maven
       JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-      PATH: $PATH:/usr/share/maven/bin:/usr/lib/jvm/java-17-openjdk-amd64/bin
-    command: >
+      PATH: "${PATH}:/usr/share/maven/bin:/usr/lib/jvm/java-17-openjdk-amd64/bin"
+    command: |
       /bin/bash -c "
       apt-get update &&
       apt-get install -y maven docker.io openjdk-17-jdk wget yq &&
+      
+      # Mise à jour des certificats système (ajout du certificat)
+      update-ca-certificates &&
+      # Import explicite dans le keystore Java
+      
+      keytool -importcert -trustcacerts -alias sonarqube -file /usr/local/share/ca-certificates/sonarqube.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt ||
+      echo 'Certificat sonarqube déjà importé ou erreur ignorée' &&
+      
+      keytool -import -trustcacerts -alias nexus-cert -file /usr/local/share/ca-certificates/nexus.crt -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -noprompt ||
+      echo 'Certificat nexus déjà importé ou erreur ignorée' &&
+      
       wget https://github.com/aquasecurity/trivy/releases/download/v0.44.0/trivy_0.44.0_Linux-64bit.deb &&
       dpkg -i trivy_0.44.0_Linux-64bit.deb &&
       curl -L -o cosign https://github.com/sigstore/cosign/releases/latest/download/cosign-linux-amd64 &&
       mv cosign /usr/local/bin/cosign &&
       chmod +x /usr/local/bin/cosign &&
+      git config --global http.sslVerify false &&
+      echo 'Git SSL verification disabled' &&
       exec /usr/local/bin/jenkins.sh"
 
   nginx:
@@ -304,6 +329,32 @@ Maven integration,
 Pipeline Utility Steps
 SonarQube Scanner
 SonarQube Quality Gates Plugin
+NodeJS Plugin pour angular
 ```
 
 # JENKINS UP AND TABLE
+
+Pour le mode prod en https
+
+Option 1: desactiver la vérification ssl par git dans le container jenkins
+
+```
+docker exec -it jenkins /bin/bash
+git config --global http.sslVerify false
+git config --global --get http.sslVerify
+
+```
+
+## pour vérifier si le certificat est bien present
+
+
+```
+docker exec -ti jenkins /bin/bash
+keytool -list -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -alias nexus-cert
+exit
+docker restart jenkins
+```
+
+### pour nodeJs apres installation du plugins
+
+![img_11.png](img_11.png)

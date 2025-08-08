@@ -10,6 +10,14 @@ https://developer.hashicorp.com/vault/install
 wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 ```
+
+```
+###############################################################################
+#########################  VAULT DEV       ####################################
+###############################################################################
+```
+
+
 ### installation de hvault
 Intallation
 ```
@@ -47,6 +55,22 @@ Pour voir les informations du token que nous avon sexporté
 vault token lookup
 ```
 
+
+```
+###############################################################################
+#########################  VAULT PROD      ####################################
+###############################################################################
+```
+
+```
+export VAULT_ADDR=http://10.145.2.220:8200
+vault status
+sudo vault server -config=/etc/vault.d/vault.hcl
+sudo vault server -config=/etc/vault.d/vault.hcl &
+vault status
+export VAULT_ADDR=http://10.145.2.220:8200
+vault status
+```
 
 
 ### 2. démarrage de vault en mode PROD pour avoir de la persistance de la données
@@ -134,6 +158,8 @@ listener "tcp" {
 #  key_label      = "vault-hsm-key"
 #  hmac_key_label = "vault-hsm-hmac-key"
 #}
+
+
 
 ```
 
@@ -267,176 +293,94 @@ vault kv put secret/crm-service-backend user.username=mokai user.password=12345
 
 ## Point très crusial comment récupérer en toutes sécurité le root token pour lui donner à application spring-boot.
 
-1. Activer le backend d'authentification AppRole
-
 ```
-vault auth enable approle
-```
-
-2. Créer un rôle AppRole
-
-```
-vault write auth/approle/role/crm-spring-app \
-    token_policies="default" \
-    secret_id_ttl="24h" \
-    token_ttl="24h" \
-    token_max_ttl="72h"
+###############################################################################
+#########################  VAULT PROD  WITH NGINX    ##########################
+###############################################################################
 ```
 
-3. Obtenir le role_id
+
+## Vault pour un environnement de prod
+
+### 📁 Arborescence
 
 ```
-vault read auth/approle/role/crm-spring-app/role-id
+hvault-reverse-proxy/
+├── docker-compose.yml
+├── nginx/
+│   ├── nginx.conf
+│   ├── ssl/
+│   │   ├── cert.pem
+│   │   └── key.pem
 ```
 
-NB: Ceci nous retourne le role_id
-
-4. Générer le secret_id
+### 1. 🔐 Génère ou place ton certificat SSL
 
 ```
-vault write -f auth/approle/role/crm-spring-app/secret-id
+mkdir -p nginx/ssl
+openssl req -x509 -nodes -days 89365 -newkey rsa:2048 \
+  -keyout nginx/ssl/key.pem \
+  -out nginx/ssl/cert.pem \
+  -subj "/CN=10.145.2.220"
 ```
 
-NB: Ceci nous retourne le secret_id
-
-5. Vérification de l'authentification via AppRole
+### 2. ⚙️ Fichier nginx.conf
 
 ```
-vault write auth/approle/login role_id="<role_id>" secret_id="<secret_id>"
-```
+events {}
 
-NB: Ceci retournera un token Vault si l'authentification est OK
+http {
+  server {
+    listen 443 ssl;
+    server_name 10.145.2.220;
 
-5. Utilisation du role_id et du secret_id dans Vault Agent
+    ssl_certificate /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
 
-Créer un fichier vault-agent.hcl
+    ssl_protocols TLSv1.2 TLSv1.3;
 
-```
-vault {
-  address = "http://<VAULT_SERVER_IP>:8200"  # Adresse de votre serveur Vault externe
-}
-
-auto_auth {
-  method "approle" {
-    mount_path = "auth/approle"
-    config = {
-      role_id   = "<role_id>"
-      secret_id = "<secret_id>"
+    location / {
+      proxy_pass http://10.145.2.220:8200;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto https;
     }
   }
-  sink "file" {
-    path = "/vault/token"
-  }
 }
 
-log_level = "debug"
-
 ```
 
-6. création d'un configMap à partir du fichier vault-agent.hcl
+### 3. 🐳 Fichier docker-compose.yml
+
+docker-compose.yml
 
 ```
-kubectl create configMap vault-agent-config --from-file=vault-agent.hcl
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-vault-proxy
+    ports:
+      - "443:443"  # HTTPS exposé sur port 443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    networks:
+      - devops_network_app 
+networks:
+  devops_network_app:
+    driver: bridge
 ```
 
-7. exemple de Pod utilisant ma configMap
+### ▶️ Étape 5 : Lancer Nexus
 
 ```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: spring-application-with-vault-agent
-spec:
-  containers:
-    - name: spring-app
-      image: your-spring-app-image
-      volumeMounts:
-        - name: vault-token
-          mountPath: /vault
-          readOnly: true
-    - name: vault-agent
-      image: hashicorp/vault:latest
-      command: ["vault", "agent", "-config=/etc/vault-agent/vault-agent.hcl"]
-      volumeMounts:
-        - name: vault-token
-          mountPath: /vault
-        - name: vault-agent-config
-          mountPath: /etc/vault-agent
-          readOnly: true
-  volumes:
-    - name: vault-token
-      emptyDir: {}
-    - name: vault-agent-config
-      configMap:
-        name: vault-agent-config
-
-```
-
-8. Et mon bootstrap.properties ressemblera à ceci
-
-```
-spring.cloud.vault.token=file:/vault/token
-spring.cloud.vault.uri=http://127.0.0.1:8200
-spring.cloud.vault.scheme=http
-spring.cloud.vault.database.role=spring-database-role
-spring.cloud.vault.enabled=true
-
-```
-
-AU lieu de ceci
-
-```
-spring.cloud.vault.host=127.0.0.1
-spring.cloud.vault.port=8200
-spring.cloud.vault.uri=http://127.0.0.1:8200
-spring.cloud.vault.token=
-spring.cloud.vault.scheme=http
-spring.cloud.vault.database.role=spring-database-role
-```
-
-Avec ce qui précéde, si le pod tombe alors que le secret-id a déjà plus de 24h il ne pourra plus redemarrer. car le secret-id n'est plus valide.
-
-Pour palier à cela, nous devons demander à notre agent vault de renouveller le secret-id 30 minute avant l'expiration du secret-id.
-
-```
-vault {
-  address = "http://<VAULT_SERVER_IP>:8200"  # Adresse du Vault externe
-}
-
-auto_auth {
-  method "approle" {
-    mount_path = "auth/approle"
-    config = {
-      role_id   = "<role_id>"  # Remplacez <role_id> par votre role_id
-      secret_id = "<secret_id>"  # Remplacez <secret_id> par le secret_id initial
-    }
-  }
-
-  # Le Vault Agent va mettre à jour le token et le secret_id en cas d'expiration
-  sink "file" {
-    path = "/vault/token"  # Le token sera écrit ici
-  }
-
-  # Ce paramètre permet à Vault Agent de récupérer un nouveau secret_id lorsque le secret_id précédent expire
-  renewal_window = "30m"  # Par exemple, renouveler 30 minutes avant l'expiration
-}
-
-log_level = "debug"
-
-```
-
-## Ajouter les certificats à mon vault
-
-```
-cd /opt/vault/tls
+docker compose up -d
 ```
 
 ```
-sudo openssl req -newkey rsa:2048 -nodes -keyout vault-key.pem -x509 -days 365 -out vault-cert.pem
+curl -k https://10.145.2.220
+https://10.145.2.220
 ```
-
-```
-```
-
 
 

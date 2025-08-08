@@ -13,7 +13,11 @@ Garde le token pour l'étape Jenkins.
 
 NB: pour que SonarQube partage le resultat de l'analyse avec Jenkins il faut créer un webhooks dans sonarquebe
 
+Administrateur > configuration > webhooks
+
 ![img_9.png](img_9.png)
+
+Administrateur > configuration > webhooks
 
 ![img_10.png](img_10.png)
 
