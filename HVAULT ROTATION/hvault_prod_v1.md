@@ -293,6 +293,166 @@ vault kv put secret/crm-service-backend user.username=mokai user.password=12345
 
 ## Point très crusial comment récupérer en toutes sécurité le root token pour lui donner à application spring-boot.
 
+
+```
+Creation de la methode authentification kubernetes dans hvault:
+===============================================================
+```
+
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cbs-app-sa
+  namespace: default
+```
+
+---
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cbs-app-sa-token
+  namespace: default
+  annotations:
+    kubernetes.io/service-account.name: cbs-app-sa
+type: kubernetes.io/service-account-token
+```
+
+---
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cbs-app-sa-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: cbs-app-sa
+    namespace: default
+```
+
+
+```
+vault secrets enable -path=secret kv
+vault kv put secret/database username="mokai" password="mokai"
+vault kv put secret/database/crm username="mokai" password="mokai"
+vault kv put secret/database/crmbackend username="mokai" password="mokai"
+vault kv put secret/database/crmtransaction username="mokai" password="mokai"
+vault kv get secret/database/crm
+vault kv get secret/database/crmbackend
+vault kv get secret/database/crmtransaction
+```
+
+vault auth enable kubernetes
+
+
+
+# kubectl cluster-info  pour avoir IP de kubernetes'
+
+```
+url_kubernetes: https://192.168.56.10:6443
+```
+
+# Récupération du cbs-app-sa-token.jwt
+
+```
+kubectl get secret cbs-app-sa-token -n default -o jsonpath="{.data.token}" | base64 --decode
+kubectl get secret cbs-app-sa-token -n default -o jsonpath="{.data.ca\.crt}" | base64 --decode
+```
+
+# creer la config kubernetes dans hvault
+
+```
+vault write auth/kubernetes/config \
+token_reviewer_jwt="cbs-app-sa-token.jwt" \
+kubernetes_host="https://192.168.56.10:6443" \
+kubernetes_ca_cert="kubernetes-ca.crt"
+```
+
+vault read auth/kubernetes/config
+
+
+# creer un policy
+
+```
+vault policy write cbs-app-policy - <<EOF
+
+path "secret/database/crm" {
+capabilities = ["read"]
+}
+
+path "secret/database/crmbackend" {
+capabilities = ["read"]
+}
+
+path "secret/database/crmtransaction" {
+capabilities = ["read"]
+}
+
+path "database/config/crm-database" {
+capabilities = ["read", "list", "create", "update"]
+}
+
+path "database/roles/crm-database-role" {
+capabilities = ["read", "list", "create", "update"]
+}
+
+path "database/config/crmbackend-database" {
+capabilities = ["read", "list", "create", "update"]
+}
+
+path "database/roles/crmbackend-database-role" {
+capabilities = ["read", "list", "create", "update"]
+}
+
+path "database/config/crmtransaction-database" {
+capabilities = ["read", "list", "create", "update"]
+}
+
+path "database/roles/crmtransaction-database-role" {
+capabilities = ["read", "list", "create", "update"]
+}
+EOF
+```
+
+# Lister et visualiser un policy
+
+```
+vault policy list
+vault policy read cbs-app-policy
+```
+
+# createion du role authentification cbs-app-role
+
+```
+vault write auth/kubernetes/role/cbs-app-role \
+bound_service_account_names=cbs-app-sa \
+bound_service_account_namespaces=default \
+policies=cbs-app-policy \
+ttl=24h
+```
+vault read auth/kubernetes/role/cbs-app-role
+vault read auth/kubernetes/role/cbs-app-role
+
+# pour ajouter un autre namespace à un role
+
+```
+vault write auth/kubernetes/role/cbs-app-role \
+bound_service_account_names=cbs-app-sa \
+bound_service_account_namespaces=default,cbs-prod,new-namespace \
+policies=cbs-app-policy \
+ttl=24h
+```
+
+vault read auth/kubernetes/role/cbs-app-role
+vault read auth/kubernetes/role/cbs-app-role
+
+
 ```
 ###############################################################################
 #########################  VAULT PROD  WITH NGINX    ##########################
