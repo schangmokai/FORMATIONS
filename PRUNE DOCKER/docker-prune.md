@@ -46,3 +46,16 @@ docker system prune -a --volumes -f
 ```
 docker system df
 ```
+
+## le must des musts
+
+```
+sudo du -h /var/lib/docker/containers/*/*-json.log | sort -h
+```
+
+## pour vider
+
+```
+sudo truncate -s 0 /var/lib/docker/containers/*/*-json.log
+```
+
