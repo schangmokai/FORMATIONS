@@ -223,6 +223,7 @@ services:
       MAVEN_HOME: /usr/share/maven
       JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
       PATH: "${PATH}:/usr/share/maven/bin:/usr/lib/jvm/java-17-openjdk-amd64/bin"
+      JAVA_OPTS: "-Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=86400"
     command: |
       /bin/bash -c "
       apt-get update &&

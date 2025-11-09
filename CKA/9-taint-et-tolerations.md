@@ -50,3 +50,9 @@ spec:
 
 NB: un pod ayant une tolérence peut bien être déployé sur un noeuds sans tolérence.
 
+### pour retirer une tainture
+
+```
+kubectl taint nodes node1 key1=value1:NoSchedule-
+```
+

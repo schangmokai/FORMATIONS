@@ -361,7 +361,7 @@ url_kubernetes: https://192.168.56.10:6443
 # Récupération du cbs-app-sa-token.jwt
 
 ```
-kubectl get secret cbs-app-sa-token -n default -o jsonpath="{.data.token}" | base64 --decode
+kubectl get secret cbs-app-sa-token -n default -o jsonpath="{.data.token}" | base64 --decode > cbs-app-sa-token.jwt (a utiliser pour la suite)
 kubectl get secret cbs-app-sa-token -n default -o jsonpath="{.data.ca\.crt}" | base64 --decode
 ```
 
@@ -451,6 +451,14 @@ ttl=24h
 
 vault read auth/kubernetes/role/cbs-app-role
 vault read auth/kubernetes/role/cbs-app-role
+
+## dans un pod déployé sur kubernetes
+
+```
+kubectl exec -ti nginx
+cat /var/run/secrets/kubernetes.io/serviceaccount/token && echo
+curl --request POST -d '{"jwt": "token", "role":"spring-app-role"}' http://192.168.56.1:8200/v1/auth/kubernetes/login
+```
 
 
 ```
