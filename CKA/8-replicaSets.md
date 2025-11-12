@@ -15,3 +15,26 @@ La grande difference est que le ReolicationController Manage uniquement les pods
 kubectl scale --replicas=6 -f toto-rs.yaml
 kubectl scale rs toto-rs --replicas=6
 ```
+
+exemple:
+
+```
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: monitoring-daemon
+  labels:
+    app: monitoring-agent
+spec:
+   selector:
+     matchLabels:
+       app: monitoring-agent
+   template:
+     metadata:
+       labels:
+         app: monitoring-agent
+     spec:
+       containers:
+       - name: monitoring-agent
+         image: nginx
+```sss
