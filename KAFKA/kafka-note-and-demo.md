@@ -513,3 +513,16 @@ docker compose up -d
 docker-compose up -d
 
 ```
+
+### Sécurisation du cluster
+Kafka IO
+kcat -b ip:port -L
+
+lien: https://www.kafkio.com/download?utm_source=chatgpt.com
+
+```
+KafkIO-linux-2.1.2-x64.tar.gz
+cd KafkIO-linux-2.1.2-x64/bin
+./KafkaIo
+```
+bonjour rtp

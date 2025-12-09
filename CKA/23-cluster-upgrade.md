@@ -77,7 +77,7 @@ https://v1-30.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-u
 
 ####  1. changement des package version Dans tous les noeuds
 ```
-nano /etc/apt/sources.list.d/kubernetes.list
+sudo nano /etc/apt/sources.list.d/kubernetes.list
 ```
 nous allons voir deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /
 Il est important de changer la version de 1.29 à 1.30 ci-dessous la commande
@@ -168,8 +168,14 @@ https://v1-30.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/upgrading
 On se connecte en ssh sur le noeud worker01
 
 ```
-nano /etc/apt/sources.list.d/kubernetes.list
+sudo nano /etc/apt/sources.list.d/kubernetes.list
 deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /
+```
+
+#### 2. Determiner vers quel package migrer
+
+```
+sudo apt update
 ```
 
 Upgrade

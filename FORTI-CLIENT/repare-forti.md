@@ -20,7 +20,7 @@ sudo apt install forticlient
 ### Ou encore un autre client 
 
 ```
-sudo apt-get install openfortivpn
+²
 ```
 ### 
 ```

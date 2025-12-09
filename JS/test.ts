@@ -36,3 +36,25 @@ private injectHookIntoProfileField(formFields: FormlyFieldConfig[]): FormlyField
 
   return updatedFields;
 }
+
+
+export function moveItemImmutable<T>(
+  array: T[],
+  previousIndex: number,
+  currentIndex: number
+): T[] {
+  const newArray = [...array];
+  const item = newArray.splice(previousIndex, 1)[0];
+  newArray.splice(currentIndex, 0, item);
+  return newArray;
+}
+
+import { signal } from '@angular/core';
+
+items = signal<string[]>(['A', 'B', 'C', 'D']);
+
+move(previousIndex: number, currentIndex: number) {
+  this.items.update(arr =>
+    moveItemImmutable(arr, previousIndex, currentIndex)
+  );
+}
