@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-servicelb
+spec:
+  type: LoadBalancer  # Définir le type de service à LoadBalancer
+  selector:
+    app: monfront  # Le sélecteur doit correspondre aux labels du déploiement
+  ports:
+    - port: 80            # Port sur lequel le service écoute
+      targetPort: 80      # Port sur lequel le pod écoute
+      protocol: TCP        # Protocole à utiliser

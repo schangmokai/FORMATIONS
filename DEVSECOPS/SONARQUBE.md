@@ -71,7 +71,7 @@ docker compose up -d
 http://localhost:9000
 
 
-![img_8.png](img_8.png)
+![img_8.png](img/img_8.png)
 
 ### pour desinstaller
 

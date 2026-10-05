@@ -1,0 +1,35 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: demodeploy
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: monfront
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  minReadySeconds: 10
+  template: # permet de spécifier le type de pod géré par ce deployment
+    metadata:
+      labels:
+        app: monfront
+      annotations:
+        kubernetes.io/change-cause: "passage à la version 1.20"
+    spec:
+      containers:
+      - image: nginx:1.20  # suivante 1.21
+        imagePullPolicy: Always
+        name: podfront
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1

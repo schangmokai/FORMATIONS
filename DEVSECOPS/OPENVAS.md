@@ -290,6 +290,7 @@ docker compose up -d --build
 ## Test
 
 ```
+docker exec -it jenkins bash
 docker exec -it openvas bash
-ssh -p 2222 mokai@92.242.187.138
+ssh -p 2222 mokai@10.145.40.242
 ```

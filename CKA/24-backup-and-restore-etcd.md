@@ -6,6 +6,11 @@ Doc: https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/
 #### 1. backup
 
 ```
+sudo apt-get update
+sudo apt-get install etcd-client
+```
+
+```
 ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 \
   --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key \

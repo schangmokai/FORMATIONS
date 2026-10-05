@@ -5,14 +5,14 @@
 NB: Les repos de type proxy sert de cache pour les artifact utiliser dans notre projet et si une dépendance n'est pas trouvé 
 dans ce repos, nexus le recherche sur internet et le stocque pour les prochains utilisateurs.
 
-![img.png](img.png)
+![img.png](img/img.png)
 
 ### 2- creation d'un repository maven2 de type hosted pour les artifacts de type snapshot produits par nos équipes
 
 NB: Les repos de types snapshot servent à garder nos artifact de type snapshot et nous pouvons les stocker dans ce type de repos à plusieurs reprise les artifacts ayant la même version.
 (Allow redeploy)
 
-![img_1.png](img_1.png)
+![img_1.png](img/img_1.png)
 
 ### 3- creation d'un repository maven2 de type hosted pour les artifacts de type release produits par nos équipes.
 
@@ -20,7 +20,7 @@ NB: Les repos de types release servent à garder nos artifact de type release et
 (Disable redeploy)
 
 
-![img_2.png](img_2.png)
+![img_2.png](img/img_2.png)
 
 ## Java Config
 

@@ -358,4 +358,4 @@ docker restart jenkins
 
 ### pour nodeJs apres installation du plugins
 
-![img_11.png](img_11.png)
+![img_11.png](img/img_11.png)

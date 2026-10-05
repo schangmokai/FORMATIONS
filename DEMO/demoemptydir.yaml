@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: demoemptydir
+spec:
+  containers:
+  - name: emptydirnginx
+    image: nginx
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - mountPath: /usr/share/nginx/html
+      name: emptydirvolume
+  - name: emptydirdebian
+    image: debian
+    command: ["sleep", "600"]
+    volumeMounts:
+    - mountPath: /worktmp/
+      name: emptydirvolume
+  - name: emptydiralpine
+    image: alpine
+    command: ['sh', '-c', 'echo "Bonjour mokai" > /myjob/index.html']
+    volumeMounts:
+    - mountPath: /myjob/
+      name: emptydirvolume
+  volumes:
+  - name: emptydirvolume
+    emptyDir: {}

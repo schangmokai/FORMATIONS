@@ -127,7 +127,7 @@ Pour changer de context
 kubectl config use-context toto@develop
 ```
 
-Defualt config
+Default config
 
 ```
 apiVersion: v1

@@ -1,0 +1,28 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: demopodwithconfigmapenv
+spec:
+  containers:
+  - name: podnginxwithconfigmapenv
+    image: nginx
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - mountPath: "/usr/share/nginx/html"
+      name: monstorage
+    env:
+      - name: NOM
+        valueFrom:
+          configMapKeyRef:
+            name: personne
+            key: nom
+      - name: PASSION
+        valueFrom:
+          configMapKeyRef:
+            name: personne
+            key: passion
+  volumes:
+  - name: monstorage
+    configMap:
+      name: config

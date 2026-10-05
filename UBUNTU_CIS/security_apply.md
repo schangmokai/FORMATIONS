@@ -353,13 +353,15 @@ xfreerdp /v:10.145.10.98 /u:fdoumtsop
 
 sudo nano /usr/share/applications/xfreerdp.desktop
 
+sudo ls /usr/share/applications/
+
 Paste
 =====
 
 [Desktop Entry]
 Name=xfreerdp
 Comment=Client xfreerdp
-Exec=xfreerdp /v:10.145.10.98 /u:fdoumtsop /dynamic-resolution /size:1920x1080
+Exec=xfreerdp /v:10.145.10.98 /u:nreille /dynamic-resolution /size:1920x1080
 Icon=/opt/xfreerdp/xfreerdp.png
 Terminal=true
 Type=Application
@@ -369,3 +371,15 @@ Categories=Network;FileTransfer;
 sudo mkdir -p /opt/xfreerdp
 sudo wget -O /opt/xfreerdp/xfreerdp.png https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/1F5A5.svg
 sudo chmod +x /usr/share/applications/xfreerdp.desktop
+
+
+gnome-terminal -- bash -c
+
+[Desktop Entry]
+Name=xfreerdp
+Comment=Client xfreerdp
+Exec=gnome-terminal -- bash -c "xfreerdp /v:10.145.10.98 /u:nreille /dynamic-resolution /size:1920x1080"
+Icon=/opt/xfreerdp/xfreerdp.png
+Terminal=true
+Type=Application
+Categories=Network;FileTransfer;

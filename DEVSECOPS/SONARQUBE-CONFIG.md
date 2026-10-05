@@ -5,7 +5,7 @@
 
 Aller dans SonarQube > Mon compte > Security > Generate Token
 
-![img_4.png](img_4.png)
+![img_4.png](img/img_4.png)
 
 Garde le token pour l'étape Jenkins.
 
@@ -15,11 +15,11 @@ NB: pour que SonarQube partage le resultat de l'analyse avec Jenkins il faut cr�
 
 Administrateur > configuration > webhooks
 
-![img_9.png](img_9.png)
+![img_9.png](img/img_9.png)
 
 Administrateur > configuration > webhooks
 
-![img_10.png](img_10.png)
+![img_10.png](img/img_10.png)
 
 
 ### 2. 🧰 Configurer sonarQube dans Jenkins
@@ -31,13 +31,13 @@ Jenkins > Gérer Jenkins > Gérer les plugins > Installer SonarQube Scanner
 
 NB: Le type de credential est bien Secret text
 
-![img_6.png](img_6.png)
+![img_6.png](img/img_6.png)
 
 #### b) Ajouter SonarQube dans Jenkins
 
 Jenkins >Administrer Jenkins > System
 
-![img_5.png](img_5.png)
+![img_5.png](img/img_5.png)
 
 Section SonarQube servers :
 
@@ -47,6 +47,6 @@ URL : http://localhost:9000
 
 Ajouter les credentials (Token créé plus haut)
 
-![img_7.png](img_7.png)
+![img_7.png](img/img_7.png)
 
 ## FIN DU DOCUMENT

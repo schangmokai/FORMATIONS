@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-svc-dns
+  labels:
+    app: mongnix
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None ## pour dire que ce service n'est pas exposé mais il permet aux pods de communiquer entre eux
+  selector:
+    app: monsts

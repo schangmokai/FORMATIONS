@@ -1,0 +1,29 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: demodeploy
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: monfront
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: monfront
+    spec:
+      containers:
+      - image: nginx:1.17  # suivante 1.17
+        imagePullPolicy: Always
+        name: podfront
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: rsdemo
+  labels:
+    app: front
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: frontrs
+      env: prodrs
+  template:
+    metadata:
+      labels:
+        type: frontrs
+        env: prodrs
+    spec:
+      containers:
+        - name: nginx
+          image: nginx

@@ -12,7 +12,7 @@ sudo apt install curl
 Si le fichier n'existe pas, bien vouloir le créer
 
 ```
-cd /run/systemd/
+cd /run/systemd
 ```
 ```
 sudo mkdir resolve

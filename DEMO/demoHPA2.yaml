@@ -1,0 +1,24 @@
+apiVersion: autoscaling/v2  # ou v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: monhpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: demodeploy
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 15  # Utilisation cible en pourcentage
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 50  # Utilisation cible pour la mémoire (ajustez selon vos besoins)

@@ -76,6 +76,9 @@ mv 10.145.40.242.key /srv/gitlab/certs/10.145.40.242.key
 
 4- Docker compose pour l'installation de gitLab
 
+
+nano docker-compose.yml
+
 ```
 services:
   gitlab:
@@ -122,8 +125,8 @@ gitlab-rails console -e production
 ```
 ```
 user = User.where(id: 1).first
-user.password = ''
-user.password_confirmation = ''
+user.password = 'yougo2026!#'
+user.password_confirmation = 'yougo2026!#'
 user.save!
 ```
 

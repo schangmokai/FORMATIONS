@@ -1,0 +1,15 @@
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: demo-vpa
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: demodeploy
+  updatePolicy:
+    updateMode: "Off" ## on peut avoir trois valeurs possible Auto, Off, Initial
+
+## Auto: Applique la mise à jour tous les pods du deploiement
+## Off: Applique la mise à jour uniquement sur le pods ou tu te trouve
+## Initial:  Applique la mise à jours uniquement pour les nouveau pods
